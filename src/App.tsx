@@ -1,82 +1,38 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { UseFetch } from "./UseFetch";
 
-interface DataProps {
+interface ProductProps {
   id: string;
   data: string | number | Date;
   nome: string;
   status: string;
+  preco: string;
+  quantidade: string;
+  descricao: string;
 }
 
 export const App = () => {
-  const [selectedDateInit, setSelectedInitDate] = useState("");
-  const [selectedDateEnd, setSelectedEndDate] = useState("");
-  const [data, setData] = useState([]);
+  const { data, error, loading } = UseFetch(
+    "https://data.origamid.dev/produtos"
+  );
 
-  useEffect(() => {
-    async function fetchVendasData() {
-      try {
-        const response = await fetch("https://data.origamid.dev/vendas/");
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-        if (!response.ok) {
-          throw new Error("Erro ao buscar os dados da API");
-        }
-
-        const vendasData = await response.json();
-
-        const filteredData = vendasData.filter((item: DataProps) => {
-          const vendaDate = new Date(item.data).getTime();
-          const startDate = new Date(selectedDateInit).getTime();
-          const endDate = new Date(selectedDateEnd).getTime();
-          return vendaDate >= startDate && vendaDate <= endDate;
-        });
-
-        setData(filteredData);
-      } catch (error) {
-        console.error("Ocorreu um erro:", error);
-      }
-    }
-
-    fetchVendasData();
-  }, [selectedDateInit, selectedDateEnd]);
-
-  const handleDateChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSelectedInitDate(event.target.value);
-  };
-
-  const handleDateEndChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSelectedEndDate(event.target.value);
-  };
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <>
-      <div>
-        <label htmlFor="datePicker">Escolha uma data de Inicio:</label>
-        <input
-          type="date"
-          id="datePicker"
-          value={selectedDateInit}
-          onChange={handleDateChange}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="datePicker">Escolha uma data de Fim:</label>
-        <input
-          type="date"
-          id="datePicker"
-          value={selectedDateEnd}
-          onChange={handleDateEndChange}
-        />
-      </div>
-
-      <div>
-        {data.map((item: DataProps) => (
-          <ul key={item.id} style={{ display: "flex", gap: "8px" }}>
-            <li>{item.nome}:</li>
-            <li style={{ listStyle: "none" }}>{item.status}</li>
-          </ul>
-        ))}
-      </div>
+      {data.map((product: ProductProps) => (
+        <div key={product.id}>
+          <p>{product.nome}</p>
+          <p>{product.preco}</p>
+          <p>{product.quantidade}</p>
+          <p>{product.descricao}</p>
+        </div>
+      ))}
     </>
   );
 };
