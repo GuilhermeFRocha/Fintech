@@ -1,4 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
+
+interface DataProps {
+  data: string | number | Date;
+  nome: string;
+  status: string;
+}
 
 export const App = () => {
   const [selectedDateInit, setSelectedInitDate] = useState("");
@@ -14,48 +20,62 @@ export const App = () => {
           throw new Error("Erro ao buscar os dados da API");
         }
 
-        const data = await response.json();
-        setData(data);
+        const vendasData = await response.json();
+
+        const filteredData = vendasData.filter((item: DataProps) => {
+          const vendaDate = new Date(item.data).getTime();
+          const startDate = new Date(selectedDateInit).getTime();
+          const endDate = new Date(selectedDateEnd).getTime();
+
+          return vendaDate >= startDate && vendaDate <= endDate;
+        });
+
+        setData(filteredData);
       } catch (error) {
         console.error("Ocorreu um erro:", error);
       }
     }
 
     fetchVendasData();
-  }, []);
+  }, [selectedDateInit, selectedDateEnd]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDateChange = (event: any) => {
+  const handleDateChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedInitDate(event.target.value);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDateEndChange = (event: any) => {
+  const handleDateEndChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedEndDate(event.target.value);
   };
 
   return (
     <>
       <div>
-        <label htmlFor="datePicker">Escolha uma data:</label>
+        <label htmlFor="datePicker">Escolha uma data de Inicio:</label>
         <input
           type="date"
           id="datePicker"
           value={selectedDateInit}
           onChange={handleDateChange}
         />
-        <p>Data selecionada: {selectedDateInit}</p>
       </div>
 
       <div>
-        <label htmlFor="datePicker">Escolha uma data:</label>
+        <label htmlFor="datePicker">Escolha uma data de Fim:</label>
         <input
           type="date"
           id="datePicker"
           value={selectedDateEnd}
           onChange={handleDateEndChange}
         />
-        <p>Data selecionada: {selectedDateEnd}</p>
+      </div>
+
+      <div>
+        {data.map((item: DataProps) => (
+          <ul style={{ display: "flex", gap: "8px" }}>
+            <li>{item.nome}:</li>
+            <li style={{ listStyle: "none" }}>{item.status}</li>
+          </ul>
+        ))}
       </div>
     </>
   );
