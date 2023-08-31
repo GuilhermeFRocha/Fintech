@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent } from "react";
 
 interface DataProps {
+  id: string;
   data: string | number | Date;
   nome: string;
   status: string;
@@ -26,7 +27,6 @@ export const App = () => {
           const vendaDate = new Date(item.data).getTime();
           const startDate = new Date(selectedDateInit).getTime();
           const endDate = new Date(selectedDateEnd).getTime();
-
           return vendaDate >= startDate && vendaDate <= endDate;
         });
 
@@ -71,7 +71,7 @@ export const App = () => {
 
       <div>
         {data.map((item: DataProps) => (
-          <ul style={{ display: "flex", gap: "8px" }}>
+          <ul key={item.id} style={{ display: "flex", gap: "8px" }}>
             <li>{item.nome}:</li>
             <li style={{ listStyle: "none" }}>{item.status}</li>
           </ul>
