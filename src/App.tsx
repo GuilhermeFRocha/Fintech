@@ -1,12 +1,9 @@
-import { Content } from "./Content";
-import { Header } from "./Header";
-import { UserContextProvider } from "./UserContext";
+import { Form } from "./Form";
 
 export const App = () => {
   return (
-    <UserContextProvider>
-      <Header />
-      <Content />
-    </UserContextProvider>
+    <>
+      <Form />
+    </>
   );
 };
