@@ -1,3 +1,9 @@
+import { DateRange } from "./DateRange";
+
 export const Header = () => {
-  return <div>Header</div>;
+  return (
+    <div>
+      <DateRange />
+    </div>
+  );
 };
