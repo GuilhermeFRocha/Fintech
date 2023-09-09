@@ -1,47 +1,46 @@
-import {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from "react";
-import { useFetch } from "../Hooks/useFetch";
+import React from "react";
+import useFetch from "../Hooks/useFetch";
 
-interface IDataContext {
+type IDataContext = {
   data: IVenda[] | null;
   loading: boolean;
   error: string | null;
   inicio: string;
   final: string;
-  setInicio: Dispatch<SetStateAction<string>>;
-  setFinal: Dispatch<SetStateAction<string>>;
-}
+  setInicio: React.Dispatch<React.SetStateAction<string>>;
+  setFinal: React.Dispatch<React.SetStateAction<string>>;
+};
 
-interface IVenda {
+export type IVenda = {
   id: string;
   nome: string;
-  preco: string;
+  preco: number;
   status: "pago" | "processando" | "falha";
-  pagamento: "boleto" | "cartao" | "pix";
+  pagamento: "boleto" | "pix" | "cartao";
   data: string;
   parcelas: number | null;
-}
+};
 
-const DataContext = createContext<IDataContext | null>(null);
+const DataContext = React.createContext<IDataContext | null>(null);
 
 export const useData = () => {
-  const context = useContext(DataContext);
-  if (!context) throw new Error("UseData ERROR");
+  const context = React.useContext(DataContext);
+  if (!context) throw new Error("useData precisa estar em DataContextProvider");
   return context;
 };
 
-function getDate() {}
-getDate();
+function getDate(n: number) {
+  const date = new Date();
+  date.setDate(date.getDate() - n);
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const yyyy = date.getFullYear();
+  return `${yyyy}-${mm}-${dd}`;
+}
 
-export const DataContextProvider = ({ children }: PropsWithChildren) => {
-  const [inicio, setInicio] = useState("");
-  const [final, setFinal] = useState("");
+export const DataContextProvider = ({ children }: React.PropsWithChildren) => {
+  const [inicio, setInicio] = React.useState(getDate(14));
+  const [final, setFinal] = React.useState(getDate(0));
 
   const { data, loading, error } = useFetch<IVenda[]>(
     `https://data.origamid.dev/vendas/?inicio=${inicio}&final=${final}`

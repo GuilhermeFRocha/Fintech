@@ -1,9 +1,13 @@
-import { DateRange } from "./DateRange";
+import DateRange from "./DateRange";
+import { Months } from "./Months";
 
 export const Header = () => {
   return (
-    <div>
-      <DateRange />
-    </div>
+    <header className="mb">
+      <div className="mb">
+        <DateRange />
+      </div>
+      <Months />
+    </header>
   );
 };

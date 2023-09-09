@@ -1,31 +1,31 @@
-import { ComponentProps, CSSProperties } from "react";
+import React from "react";
 
-const labelStyle: CSSProperties = {
+const generalStyle: React.CSSProperties = {
+  fontSize: "1rem",
+  color: "var(--color-2)",
+  padding: "var(--gap-s) .75rem",
+  backgroundColor: "var(--color-4)",
+  borderRadius: "var(--gap)",
+};
+
+const labelStyle: React.CSSProperties = {
   display: "block",
   marginBottom: "var(--gap-s)",
-  fontWeight: 600,
-  fontSize: "1rem",
-  color: "var(--color-2)",
-  padding: "var(--gap-s) .75rem",
-  backgroundColor: "var(--color-4)",
-  borderRadius: "var(--gap)",
+  fontWeight: "600",
+  ...generalStyle,
 };
 
-const inputStyle: CSSProperties = {
+const inputStyle: React.CSSProperties = {
   border: "none",
   fontFamily: "monospace",
-  fontSize: "1rem",
-  color: "var(--color-2)",
-  padding: "var(--gap-s) .75rem",
-  backgroundColor: "var(--color-4)",
-  borderRadius: "var(--gap)",
+  ...generalStyle,
 };
 
-interface IDateInput extends ComponentProps<"input"> {
+type IDateInput = React.ComponentProps<"input"> & {
   label: string;
-}
+};
 
-export const DateInput = ({ label, ...props }: IDateInput) => {
+const DateInput = ({ label, ...props }: IDateInput) => {
   return (
     <div>
       <label style={labelStyle} htmlFor={label}>
@@ -33,11 +33,13 @@ export const DateInput = ({ label, ...props }: IDateInput) => {
       </label>
       <input
         style={inputStyle}
-        type="date"
-        name={label}
         id={label}
+        name={label}
+        type="date"
         {...props}
       />
     </div>
   );
 };
+
+export default DateInput;
