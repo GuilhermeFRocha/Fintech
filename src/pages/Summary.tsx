@@ -1,4 +1,5 @@
 import { useData } from "../Context/DataContext";
+import SalesChart from "../components/SalesChart";
 
 export const Summary = () => {
   const { data } = useData();
@@ -36,7 +37,9 @@ export const Summary = () => {
         </div>
       </div>
 
-      <div className="box mb">Gráficos</div>
+      <div className="box mb">
+        <SalesChart data={data} />
+      </div>
     </section>
   );
 };
